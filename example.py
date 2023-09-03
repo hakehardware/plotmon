@@ -133,7 +133,7 @@ job_progress = Progress(
     BarColumn(),
     TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
 )
-job_progress.add_task("[green]Cooking")
+job_progress.add_task("[green]Cooking", total=150)
 job_progress.add_task("[magenta]Baking", total=200)
 job_progress.add_task("[cyan]Mixing", total=400)
 
