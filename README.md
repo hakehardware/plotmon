@@ -11,10 +11,10 @@ Monitors a Spacemesh Node
 
 ### Activate Virtual Environment
 
-Linux
+##### Linux
 ``` source env/bin/activate ```
 
-Windows
+##### Windows
 ``` source env/Scripts/activate ```
 
 ### Install Requirements
