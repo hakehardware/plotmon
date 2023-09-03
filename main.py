@@ -126,9 +126,9 @@ class PlotProgress:
 
         if(self.beats > 10):
             plot_estimates = PlotLibProgress.get_plot_estimates(self.config["post_data_dir"], self.first_heartbeat_time, self.initial_total_file_size, plot_progress_data["Current Total File Size"])
-            self.speed.update(plot_estimates["Speed"])
-            self.completion_date.update(plot_estimates["Completion Date"])
-            self.time_remaining.update(plot_estimates["Time Remaining"])
+            self.speed.update(f'{plot_estimates["Speed"]}MiB/s')
+            self.completion_date.update(f'{plot_estimates["Completion Date"]}')
+            self.time_remaining.update(f'{plot_estimates["Time Remaining"]} hours')
 
 class PlotInfo:
     def create_panel(self, config) -> Panel:

@@ -81,11 +81,11 @@ class PlotLibProgress:
         current_time = datetime.datetime.now()
         completion_time = current_time + datetime.timedelta(seconds=time_seconds)
 
-        iso8601_string = completion_time.isoformat()
+        formatted_date = completion_time.strftime("%b %d, %Y %H:%M")
 
         return {
             'Time Remaining': str(round(time_hours, 2)),
-            'Completion Date': iso8601_string,
+            'Completion Date': formatted_date,
             'Speed': str(round(speed_mib, 2))
         }
 
