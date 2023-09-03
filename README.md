@@ -1,5 +1,5 @@
 # plotmon
-Monitors a Spacemesh Node
+Monitors a Spacemesh Plotter. Currently only supports a single GPU. If you have multi-GPU it will only show the provider 0. It should still work but you won't get stats on each GPU. I will add multi-GPU support in the future.
 
 ### Install Venv
 
