@@ -9,7 +9,7 @@ from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 from rich.syntax import Syntax
 from rich.table import Table
 from time import sleep
-
+import time
 from rich.live import Live
 from plot_lib import PlotLibGpu, PlotLibInfo, PlotLibProgress
 
@@ -56,6 +56,9 @@ class PlotProgress:
     def __init__(self, config):
         self.plot_progress_history = []
         self.config = config
+        self.initial_total_file_size = None
+        self.first_heartbeat = None
+        self.beats = 0
 
     def create_panel(self) -> Panel:
 
@@ -75,6 +78,20 @@ class PlotProgress:
         }
 
         plot_progress_table = Table.grid(expand=True)
+        plot_progress_table.add_column()
+        plot_progress_table.add_column()
+
+        self.initial_total_file_size = plot_progress_data["Current Total File Size"]
+        self.first_heartbeat = time.time()
+        self.beats += 1
+
+        estimation_table = Table.grid()
+        estimation_table.add_column(min_width=30)
+        estimation_table.add_column()
+
+        estimation_table.add_row("Completion Date:", "Sun Sep  3 21:52:30 2023")
+        estimation_table.add_row("Time Remaining:", "12:24:53")
+        estimation_table.add_row("Speed:", "3.5MiB/s")
 
         plot_progress_table.add_row(
             Panel(
@@ -82,6 +99,12 @@ class PlotProgress:
                 title="Plot Progress",
                 border_style="green",
                 padding=(1, 1),
+            ),
+            Panel(
+                estimation_table,
+                box=box.ROUNDED,
+                title="Estimations",
+                padding=(1, 2),
             )
         )
 

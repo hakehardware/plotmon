@@ -13,7 +13,8 @@ class PlotLibProgress:
         return {
             "Total Progress": post_progress_new["Total Progress"],
             "File Progress": post_progress_new["File Progress"],
-            "Current File": post_progress_new["Current File"]
+            "Current File": post_progress_new["Current File"],
+            "Current Total File Size": post_progress_new["Current Total File Size"]
         }
 
     @staticmethod
@@ -49,7 +50,8 @@ class PlotLibProgress:
         return {
             "Total Progress": total_progress,
             "File Progress": file_progress,
-            "Current File": current_file
+            "Current File": current_file,
+            "Current Total File Size": post_data_size
         }
     
     @staticmethod
@@ -129,7 +131,7 @@ class PlotLibGpu:
                 "Memory Utilization": memory_utilization,
                 "Temp GPU": temp_gpu,
                 "Fan Speed": fan_speed,
-                "Power Draw": power_draw,
+                "Power Draw": int(power_draw),
                 "Performance State": performance_state,
                 "Name": name
         })
