@@ -1,6 +1,13 @@
 import subprocess
+import json
+from base64 import b64decode
+import socket
 
 class PlotLibProgress:
+    @staticmethod
+    def get_plot_progress():
+        pass
+    
     @staticmethod
     def _get_estimated_completion_datetime():
         pass
@@ -32,7 +39,7 @@ class PlotLibProgress:
 
 class PlotLibGpu:
     @staticmethod
-    def _get_gpu_data_from_host():
+    def get_gpu_data_from_host():
         # Run nvidia-smi to get GPU information
         nvidia_smi_output = subprocess.check_output(
             [
@@ -91,42 +98,59 @@ class PlotLibGpu:
 
 
 class PlotLibInfo:
-    @staticmethod
-    def _get_commitment_atx():
-        pass
 
     @staticmethod
-    def _get_id():
-        pass
+    def get_plot_info(post_data_dir):
 
-    @staticmethod
-    def _get_postcli_version():
-        pass
+        nonce = None
+        nonce_value = None
+        found_nonce = False
 
-    @staticmethod
-    def _get_hostname():
-        pass
+        with open(post_data_dir + '/postdata_metadata.json') as f:
+            metadata = f.read()
 
-    @staticmethod
-    def _get_labels():
-        pass
+        parsed_metadata = json.loads(metadata)
 
-    @staticmethod
-    def _get_num_units():
-        pass
+        base64_node_id = parsed_metadata['NodeId']
+        hex_node_id = b64decode(base64_node_id).hex()
 
-    @staticmethod
-    def _get_max_file_size_gib():
-        pass
+        base64_commitment_atx_id = parsed_metadata['CommitmentAtxId']
+        hex_commitment_atx_id = b64decode(base64_commitment_atx_id).hex()
 
-    @staticmethod
-    def _get_nonce():
-        pass
+        num_units = parsed_metadata['NumUnits']
 
-    @staticmethod
-    def _get_post_data_dir():
-        pass
+        total_size_gib = num_units * 64
 
-    @staticmethod
-    def _get_post_data_size_gib():
-        pass
+        max_file_size_gib = parsed_metadata['MaxFileSize'] / (1024*1024*1024)
+
+        labels_per_unit = parsed_metadata['LabelsPerUnit']
+
+        hostname = socket.gethostname()
+
+        try:
+            nonce = parsed_metadata['Nonce']
+        except:
+            pass
+
+        try:
+            nonce_value = parsed_metadata['NonceValue']
+        except:
+            pass
+
+        if nonce_value and nonce:
+            found_nonce = True
+
+        return {
+            "Base64 Node ID": base64_node_id,
+            "Hex Node ID": hex_node_id,
+            "Base64 Commitment ATX ID": base64_commitment_atx_id,
+            "Hex Commitment ATX ID": hex_commitment_atx_id,
+            "NumUnits": num_units,
+            "Max File Size GiB": max_file_size_gib,
+            "Labels Per Unit": labels_per_unit,
+            "Nonce": nonce,
+            "Nonce Value": nonce_value,
+            "Hostname": hostname,
+            "Total Size GiB": total_size_gib,
+            "Found Nonce": found_nonce
+        }

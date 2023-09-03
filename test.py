@@ -1,5 +1,5 @@
 import json
-from plot_lib import PlotLibGpu
+from plot_lib import PlotLibGpu, PlotLibInfo
 
 def main():
     config = None
@@ -12,6 +12,7 @@ def main():
     else:
         print(json.dumps(config))
 
-    print(json.dumps(PlotLibGpu._get_gpu_data_from_host()))
+    plot_info = PlotLibInfo.get_plot_info(config["post_data_dir"])
+    print(plot_info)
 
 main()
