@@ -213,7 +213,7 @@ def main():
     with Live(layout, refresh_per_second=1, screen=True):
         while True:
             sleep(1)
-            gpu_info = PlotLibGpu._get_gpu_data_from_host()[0]
+            gpu_info = PlotLibGpu.get_gpu_data_from_host()[0]
             gpu.update_gpu_task("GPU Temp", completed=gpu_info["Temp GPU"], gpu_value=f'{gpu_info["Temp GPU"]}\u00b0C')
             gpu.update_gpu_task("GPU Power", completed=gpu_info["Power Draw"], gpu_value=f'{gpu_info["Power Draw"]}W')
             gpu.update_gpu_task("GPU Use", completed=gpu_info["GPU Utilization"], gpu_value=f'{gpu_info["GPU Utilization"]}%')
