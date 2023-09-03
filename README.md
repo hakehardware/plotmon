@@ -3,24 +3,36 @@ Monitors a Spacemesh Node
 
 ### Install Venv
 
-```sudo apt install python3.10-venv```
+```
+sudo apt install python3.10-venv
+```
 
 ### Create Virtual Environment
 
-``` python3 -m venv env ```
+```
+python3 -m venv env
+```
 
 ### Activate Virtual Environment
 
 ##### Linux
-``` source env/bin/activate ```
+``` 
+source env/bin/activate
+```
 
 ##### Windows
-``` source env/Scripts/activate ```
+``` 
+source env/Scripts/activate
+```
 
 ### Install Requirements
 
-```pip install -r requirements.txt```
+```
+pip install -r requirements.txt
+```
 
 ### Update Config
 
-```{"post_data_dir": <YOUR POST DATA DIR>}```
+```
+{"post_data_dir": <YOUR POST DATA DIR>}
+```
