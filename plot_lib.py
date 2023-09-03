@@ -42,7 +42,8 @@ class PlotLibProgress:
                     'Size MiB': str(size / (1024 * 1024)),
                     'Index': int(match.group(1))
                 })
-
+        print(float(file_metadata[-1]["Size MiB"]))
+        print(max_file_size_mib)
         current_file = max(file_metadata, key=lambda x: x["Index"])
         total_progress = round((post_data_size / (1024*1024)) / total_file_size_mib, 2)*100
         file_progress = round(float(file_metadata[-1]["Size MiB"]) / max_file_size_mib, 2)*100
