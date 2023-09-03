@@ -36,6 +36,7 @@ pip install -r requirements.txt
 ```
 
 ### Update Config
+Rename example.config.json to config.json, then update the post_data_dir.
 
 ```
 {"post_data_dir": <YOUR POST DATA DIR>}
