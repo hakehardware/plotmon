@@ -11,8 +11,9 @@ from rich.table import Table
 from time import sleep
 
 from rich.live import Live
-from plot_lib import PlotLibGpu, PlotLibInfo
+from plot_lib import PlotLibGpu, PlotLibInfo, PlotLibProgress
 
+VERSION = "v0.0.1"
 
 console = Console()
 
@@ -53,20 +54,37 @@ class GPUInfo:
 
 class PlotProgress:
     def __init__(self):
-        self.plot_progress_data = None
+        self.plot_progress_history = []
 
     def create_panel(self, config) -> Panel:
 
-        self.plot_progress = Progress(
+        self.plot_status = Progress(
             "{task.description}",
             SpinnerColumn(),
             BarColumn(),
-            TextColumn("[green]{task.fields[prog_value]}")
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%")
         )
 
-        return Panel(
-            "Hi"
+        plot_progress_data = PlotLibProgress.get_plot_progress(config["post_data_dir"], self.plot_progress_history)
+        self.plot_progress_history.append(plot_progress_data)
+
+        self.task_ids = {
+            "Total Progress": self.plot_status.add_task("[green]Total Progress", completed=plot_progress_data["Total Progress"], total=100),
+            "File Progress": self.plot_status.add_task(f'[green]{plot_progress_data["Current File"]["File Name"]}', completed=plot_progress_data["File Progress"], total=100),
+        }
+
+        plot_progress_table = Table.grid(expand=True)
+
+        plot_progress_table.add_row(
+            Panel(
+                self.plot_status,
+                title="Plot Progress",
+                border_style="green",
+                padding=(1, 1),
+            )
         )
+
+        return plot_progress_table
     
     def update_panel(self):
         pass
@@ -178,7 +196,7 @@ class Header:
         grid.add_column(justify="right")
 
         grid.add_row(
-            "PlotMon",
+            f"PlotMon {VERSION}",
             "https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg for more Spacemesh content!",
             datetime.now().ctime().replace(":", "[blink]:[/]"),
         )
