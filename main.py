@@ -12,6 +12,9 @@ from time import sleep
 import time
 from rich.live import Live
 from plot_lib import PlotLibGpu, PlotLibInfo, PlotLibProgress
+from rich import print
+from rich.status import Status
+
 
 VERSION = "v0.0.1"
 
@@ -54,10 +57,9 @@ class GPUInfo:
 
 class PlotProgress:
     def __init__(self, config):
-        self.plot_progress_history = []
         self.config = config
         self.initial_total_file_size = None
-        self.first_heartbeat = None
+        self.first_heartbeat_time = time.time()
         self.beats = 0
 
     def create_panel(self) -> Panel:
@@ -69,8 +71,7 @@ class PlotProgress:
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%")
         )
 
-        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"], self.plot_progress_history)
-        self.plot_progress_history.append(plot_progress_data)
+        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"])
 
         self.task_ids = {
             "Total Progress": self.plot_status.add_task("[green]Total Progress", completed=plot_progress_data["Total Progress"], total=100),
@@ -82,16 +83,21 @@ class PlotProgress:
         plot_progress_table.add_column()
 
         self.initial_total_file_size = plot_progress_data["Current Total File Size"]
-        self.first_heartbeat = time.time()
         self.beats += 1
 
         estimation_table = Table.grid()
         estimation_table.add_column(min_width=30)
         estimation_table.add_column()
 
-        estimation_table.add_row("Completion Date:", "Sun Sep  3 21:52:30 2023")
-        estimation_table.add_row("Time Remaining:", "12:24:53")
-        estimation_table.add_row("Speed:", "3.5MiB/s")
+        self.time_remaining = Status("Waiting for more beats")
+        self.completion_date = Status("Waiting for more beats")
+        self.speed = Status("Waiting for more beats")
+        self.beats_str = Status(str(self.beats))
+
+        estimation_table.add_row("Completion Date:", self.completion_date)
+        estimation_table.add_row("Time Remaining:", self.time_remaining)
+        estimation_table.add_row("Speed:", self.speed)
+        estimation_table.add_row("Beats:", self.beats_str)
 
         plot_progress_table.add_row(
             Panel(
@@ -111,13 +117,18 @@ class PlotProgress:
         return plot_progress_table
     
     def update_panel(self):
-        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"], self.plot_progress_history)
-        self.plot_progress_history.append(plot_progress_data)
+        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"])
 
         self.plot_status.update(self.task_ids["Total Progress"], completed=plot_progress_data["Total Progress"])
         self.plot_status.update(self.task_ids["File Progress"], description=f'[green]{plot_progress_data["Current File"]["File Name"]}', completed=plot_progress_data["File Progress"])
+        self.beats += 1
+        self.beats_str.update(str(self.beats))
 
-
+        if(self.beats > 10):
+            plot_estimates = PlotLibProgress.get_plot_estimates(self.config["post_data_dir"], self.first_heartbeat_time, self.initial_total_file_size, plot_progress_data["Current Total File Size"])
+            self.speed.update(plot_estimates["Speed"])
+            self.completion_date.update(plot_estimates["Completion Date"])
+            self.time_remaining.update(plot_estimates["Time Remaining"])
 
 class PlotInfo:
     def create_panel(self, config) -> Panel:

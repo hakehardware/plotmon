@@ -4,10 +4,12 @@ from base64 import b64decode
 import socket
 import os
 import re
+import time
+import datetime
 
 class PlotLibProgress:
     @staticmethod
-    def get_plot_progress(post_data_dir, plot_progress_data):
+    def get_plot_progress(post_data_dir):
         post_progress_new = PlotLibProgress._get_file_progress(post_data_dir)
 
         return {
@@ -54,6 +56,39 @@ class PlotLibProgress:
             "Current Total File Size": post_data_size
         }
     
+    def get_plot_estimates(post_data_dir,first_heartbeat_time, intial_total_file_size, current_total_file_size):
+        
+        current_time = time.time()
+        plot_info = PlotLibInfo.get_plot_info(post_data_dir)
+        total_size_bytes = plot_info["Total Size GiB"] * (1024*1024*1024)
+
+        remaining_mib = (total_size_bytes - current_total_file_size) / (1024*1024)
+        size_diff = current_total_file_size - intial_total_file_size
+        time_diff = current_time - first_heartbeat_time
+        speed_mib = (size_diff / time_diff) / (1024*1024)
+
+
+
+        if speed_mib == 0:
+            return {
+                'Time Remaining': "Waiting for speed to go above 0 MiB/s",
+                'Completion Date': "Waiting for speed to go above 0 MiB/s",
+                'Speed': "Waiting for speed to go above 0 MiB/s"
+            }
+        
+        time_seconds = (remaining_mib) / speed_mib
+        time_hours = time_seconds / 3600
+        current_time = datetime.datetime.now()
+        completion_time = current_time + datetime.timedelta(seconds=time_seconds)
+
+        iso8601_string = completion_time.isoformat()
+
+        return {
+            'Time Remaining': str(round(time_hours, 2)),
+            'Completion Date': iso8601_string,
+            'Speed': str(round(speed_mib, 2))
+        }
+
     @staticmethod
     def _get_elapsed_time_from_start_hour_min():
         pass
