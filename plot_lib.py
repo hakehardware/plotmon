@@ -9,7 +9,6 @@ class PlotLibProgress:
     @staticmethod
     def get_plot_progress(post_data_dir, plot_progress_data):
         post_progress_new = PlotLibProgress._get_file_progress(post_data_dir)
-        print(post_progress_new)
 
         return {
             "Total Progress": post_progress_new["Total Progress"],

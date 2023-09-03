@@ -53,10 +53,11 @@ class GPUInfo:
         self.gpu_status.update(task_id, completed=completed, gpu_value=gpu_value)
 
 class PlotProgress:
-    def __init__(self):
+    def __init__(self, config):
         self.plot_progress_history = []
+        self.config = config
 
-    def create_panel(self, config) -> Panel:
+    def create_panel(self) -> Panel:
 
         self.plot_status = Progress(
             "{task.description}",
@@ -65,7 +66,7 @@ class PlotProgress:
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%")
         )
 
-        plot_progress_data = PlotLibProgress.get_plot_progress(config["post_data_dir"], self.plot_progress_history)
+        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"], self.plot_progress_history)
         self.plot_progress_history.append(plot_progress_data)
 
         self.task_ids = {
@@ -87,7 +88,13 @@ class PlotProgress:
         return plot_progress_table
     
     def update_panel(self):
-        pass
+        plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"], self.plot_progress_history)
+        self.plot_progress_history.append(plot_progress_data)
+
+        self.plot_status.update(self.task_ids["Total Progress"], completed=plot_progress_data["Total Progress"])
+        self.plot_status.update(self.task_ids["File Progress"], description=f'[green]{plot_progress_data["Current File"]["File Name"]}', completed=plot_progress_data["File Progress"])
+
+
 
 class PlotInfo:
     def create_panel(self, config) -> Panel:
@@ -217,13 +224,13 @@ def main():
     gpu = GPUInfo()
     plot_info = PlotInfo()
     plot_ids = PlotIds()
-    plot_progress = PlotProgress()
+    plot_progress = PlotProgress(config)
 
     # Create Layout
     layout = make_layout()
     layout["gpu_info"].update(gpu.create_panel())
     layout["plot_info"].update(plot_info.create_panel(config))
-    layout["plot_progress"].update(plot_progress.create_panel(config))
+    layout["plot_progress"].update(plot_progress.create_panel())
     layout["plot_ids"].update(plot_ids.create_panel(config))
     layout["header"].update(Header())
 
@@ -237,6 +244,8 @@ def main():
             gpu.update_gpu_task("GPU Use", completed=gpu_info["GPU Utilization"], gpu_value=f'{gpu_info["GPU Utilization"]}%')
             gpu.update_gpu_task("GPU Mem Use", completed=gpu_info["Memory Utilization"], gpu_value=f'{gpu_info["Memory Utilization"]}%')
             gpu.update_gpu_task("GPU Fan Speed", completed=gpu_info["Fan Speed"], gpu_value=f'{gpu_info["Fan Speed"]}%')
+
+            plot_progress.update_panel()
 
 if __name__ == "__main__":
     main()
