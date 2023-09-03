@@ -27,9 +27,9 @@ class GPUInfo:
         self.task_ids = {
             "GPU Temp": self.gpu_status.add_task("[green]Temperature", gpu_value=f'{gpu_info["Temp GPU"]}\u00b0C', total=100),
             "GPU Power": self.gpu_status.add_task("[green]Power", gpu_value=f'{gpu_info["Power Draw"]}W', total=800),
-            "GPU Use": self.gpu_status.add_task("[green]GPU Use", gpu_value=f'{gpu_info["GPU Utilization"]}%', total=100),
-            "GPU Mem Use": self.gpu_status.add_task("[green]Mem Use", gpu_value=f'{gpu_info["Memory Utilization"]}%', total=100),
-            "GPU Fan Speed": self.gpu_status.add_task("[green]Fan Speed", gpu_value=f'{gpu_info["Fan Speed"]}%', total=100)
+            "GPU Use": self.gpu_status.add_task("[green]GPU Use", gpu_value=f'{gpu_info["GPU Utilization"]}%', total=101),
+            "GPU Mem Use": self.gpu_status.add_task("[green]Mem Use", gpu_value=f'{gpu_info["Memory Utilization"]}%', total=101),
+            "GPU Fan Speed": self.gpu_status.add_task("[green]Fan Speed", gpu_value=f'{gpu_info["Fan Speed"]}%', total=101)
         }
 
         gpu_panel = Panel(
@@ -52,12 +52,14 @@ class PlotProgress:
     def update_panel(self):
         pass
 
+
 class PlotInfo:
     def create_panel(self) -> Panel:
         pass
 
     def update_panel(self):
         pass
+
 
 def make_layout() -> Layout:
     layout = Layout(name="root")
