@@ -38,7 +38,7 @@ class GraphicsMon:
                 title=gpu_info["Name"],
                 border_style="green",
                 padding=(1, 1),
-                height=10
+                height=12
             )
         )
 
@@ -108,7 +108,7 @@ class ProgressMon:
             box=box.ROUNDED,
             border_style="green",
             width=200,
-            height=10
+            height=12
         )
     
     def update_panel(self):
@@ -166,7 +166,7 @@ class InfoMon:
             padding=(1, 2),
             title="Plot Info",
             border_style="green",
-            height=10
+            height=12
         )
 
         return plot_panel
@@ -204,7 +204,7 @@ class IdMon:
             padding=(1, 2),
             title="Plot IDs",
             border_style="bright_blue",
-            height=10
+            height=12
         )
 
         return plot_panel
@@ -233,12 +233,14 @@ class GenLayout:
             Layout(name="header", size=3),
             Layout(name="main", ratio=1),
         )
+
+    
         layout["main"].split_row(
             Layout(name="side"),
             Layout(name="body", ratio=2),
         )
 
-        layout["side"].split(Layout(name="gpu_info"), Layout(name="plot_info"))
-        layout["body"].split(Layout(name="plot_progress"), Layout(name="plot_ids"))
+        layout["side"].split_column(Layout(name="gpu_info", minimum_size=12), Layout(name="plot_info", minimum_size=12))
+        layout["body"].split_column(Layout(name="plot_progress", minimum_size=12), Layout(name="plot_ids", minimum_size=12))
 
         return layout
