@@ -7,6 +7,7 @@ from rich.table import Table
 from rich.status import Status
 from rich import box
 from rich.layout import Layout
+from rich.align import Align
 
 from plot_lib import PlotLibGpu, PlotLibProgress, PlotLibInfo
 
@@ -38,7 +39,7 @@ class GraphicsMon:
                 title=gpu_info["Name"],
                 border_style="green",
                 padding=(1, 1),
-                height=12
+                height=12,
             )
         )
 
@@ -104,7 +105,7 @@ class ProgressMon:
         return Panel(
             plot_progress_table,
             title="Plot Progress",
-            padding=(1, 2),
+            padding=(1, 1),
             box=box.ROUNDED,
             border_style="green",
             width=200,
@@ -163,7 +164,7 @@ class InfoMon:
         plot_panel = Panel(
             plot_table,
             box=box.ROUNDED,
-            padding=(1, 2),
+            padding=(1, 1),
             title="Plot Info",
             border_style="green",
             height=12
@@ -201,9 +202,9 @@ class IdMon:
         plot_panel = Panel(
             plot_table,
             box=box.ROUNDED,
-            padding=(1, 2),
+            padding=(1, 1),
             title="Plot IDs",
-            border_style="bright_blue",
+            border_style="green",
             height=12
         )
 
