@@ -3,11 +3,12 @@ from datetime import datetime
 
 from rich.panel import Panel
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
-from plot_lib import PlotLibGpu, PlotLibProgress, PlotLibInfo
 from rich.table import Table
 from rich.status import Status
 from rich import box
 from rich.layout import Layout
+
+from plot_lib import PlotLibGpu, PlotLibProgress, PlotLibInfo
 
 VERSION = "v0.0.1"
 
@@ -37,6 +38,7 @@ class GraphicsMon:
                 title=gpu_info["Name"],
                 border_style="green",
                 padding=(1, 1),
+                height=10
             )
         )
 
@@ -73,17 +75,13 @@ class ProgressMon:
             "Total Progress": self.plot_status.add_task("[green]Total Progress", completed=plot_progress_data["Total Progress"], total=100),
             "File Progress": self.plot_status.add_task(f'[green]{plot_progress_data["Current File"]["File Name"]}', completed=plot_progress_data["File Progress"], total=100),
         }
-
-        plot_progress_table = Table.grid(expand=True)
-        plot_progress_table.add_column()
-        plot_progress_table.add_column()
-
         self.initial_total_file_size = plot_progress_data["Current Total File Size"]
         self.beats += 1
 
+        plot_progress_table = Table.grid(expand=True, padding=1)
+
         estimation_table = Table.grid()
-        estimation_table.add_column(min_width=30)
-        estimation_table.add_column()
+        estimation_table.add_column(min_width=20)
 
         self.time_remaining = Status("Waiting for more beats")
         self.completion_date = Status("Waiting for more beats")
@@ -96,21 +94,22 @@ class ProgressMon:
         estimation_table.add_row("Beats:", self.beats_str)
 
         plot_progress_table.add_row(
-            Panel(
-                self.plot_status,
-                title="Plot Progress",
-                border_style="green",
-                padding=(1, 1),
-            ),
-            Panel(
-                estimation_table,
-                box=box.ROUNDED,
-                title="Estimations",
-                padding=(1, 2),
-            )
+            self.plot_status
         )
 
-        return plot_progress_table
+        plot_progress_table.add_row(
+            estimation_table
+        )
+
+        return Panel(
+            plot_progress_table,
+            title="Plot Progress",
+            padding=(1, 2),
+            box=box.ROUNDED,
+            border_style="green",
+            width=200,
+            height=10
+        )
     
     def update_panel(self):
         plot_progress_data = PlotLibProgress.get_plot_progress(self.config["post_data_dir"])
@@ -166,7 +165,8 @@ class InfoMon:
             box=box.ROUNDED,
             padding=(1, 2),
             title="Plot Info",
-            border_style="bright_blue",
+            border_style="green",
+            height=10
         )
 
         return plot_panel
@@ -204,6 +204,7 @@ class IdMon:
             padding=(1, 2),
             title="Plot IDs",
             border_style="bright_blue",
+            height=10
         )
 
         return plot_panel
@@ -234,7 +235,7 @@ class GenLayout:
         )
         layout["main"].split_row(
             Layout(name="side"),
-            Layout(name="body", ratio=2, minimum_size=60),
+            Layout(name="body", ratio=2),
         )
 
         layout["side"].split(Layout(name="gpu_info"), Layout(name="plot_info"))
