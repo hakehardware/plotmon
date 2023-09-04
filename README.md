@@ -1,5 +1,8 @@
 # plotmon
 Monitors a Spacemesh Plotter. Currently only supports a single GPU. If you have multi-GPU it will only show the provider 0. It should still work but you won't get stats on each GPU. I will add multi-GPU support in the future.
+![PlotMon](https://github.com/hakehardware/plotmon/blob/main/Plotmon.png)
+
+If you'd like to support updates and more tools like this consider subscribing to my YouTube: https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg (Lots of Spacehmesh Content)
 
 ### Install Venv
 
@@ -33,7 +36,15 @@ pip install -r requirements.txt
 ```
 
 ### Update Config
+Rename example.config.json to config.json, then update the post_data_dir.
 
 ```
 {"post_data_dir": <YOUR POST DATA DIR>}
 ```
+
+### Run
+```
+python3 main.py
+```
+
+### Enjoy :D
