@@ -47,4 +47,13 @@ Rename example.config.json to config.json, then update the post_data_dir.
 python3 main.py
 ```
 
+### For latest updats run
+```
+git fetch
+```
+
+```
+git merge origin main
+```
+
 ### Enjoy :D
